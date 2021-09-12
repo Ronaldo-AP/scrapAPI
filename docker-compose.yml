@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+
+  selenium:
+
+    build: 
+      context: ./selenium
+      dockerfile: ./Dockerfile
+
+    expose:
+      - 4444
+
+    networks: 
+      scrap-net:
+        aliases: 
+          - seleniumAddress
+
+    deploy:
+      resources:
+        limits:
+          memory: 1000m
+        reservations:
+          memory: 500m
+
+  scrap:
+
+    build: .
+
+    depends_on:
+      - selenium
+
+    expose: 
+      - 80
+
+    ports: 
+      - "80:80"
+
+    networks: 
+      - scrap-net
+      
+    deploy:
+      resources:
+        limits:
+          memory: 2500m
+        reservations:
+          memory: 1500m
+
+  
+networks: 
+  scrap-net:
+    driver: bridge
+
+      
+
